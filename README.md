@@ -345,26 +345,33 @@ Nous devons extraire le principal du service de la base de données des principa
 
 * Vérifiez que le principal du service a été extrait avec succès de la base de données KDC:
 	* Répertorier la liste de clés actuelle: 
+	
 	``` Shell
 	 ktutil: list
-	  ```
+	```
+	  
 	* Lire un keytab krb5 dans la liste de touches actuelle ktutil:
+	
 	``` Shell
 	 ktutil: read_kt /home/orphe/Bureau/krb5.keytab
-	  ``` 
+	``` 
+	
 	* Répertorier à nouveau la liste de clés actuelle 
+	
 	``` Shell
 	 ktutil: list
-	  ```
-	<p align="center"><img src="./Screenshots/57.png" width=450 height=150></p>
-  	<p align="center"><img src="./Screenshots/58.png" width=450 height=300></p>
+	```
+	
+	<p align="center"><img src="./Screenshots/57.png" width=450 height=100></p>
+  	<p align="center"><img src="./Screenshots/58.png" width=450 height=200></p>
 	
 ### 	Configuration du site:
-	* Modifions légèrement la configuration de notre site dans le fichier `001-sitesec.conf`, afin d'intégrer l'authentification kerberos. Ajouter ce qui suit dans 
+
+* Modifions légèrement la configuration de notre site dans le fichier `001-sitesec.conf`, afin d'intégrer l'authentification kerberos. Ajouter ce qui suit dans <br/> 
 	
-	``` Shell
+	``` html
 	 <VirtualHost *:80> ...... </VirtualHost> 
-	  ``` 
+	``` 
 	
   	<p align="center"><img src="./Screenshots/59.png" width=450 height=300></p>
 

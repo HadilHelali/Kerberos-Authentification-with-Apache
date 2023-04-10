@@ -140,55 +140,89 @@ Les utilisateurs et les services d’un domaine sont définis comme des principa
 <p align="center"><img src="./Screenshots/20.png" width=400 height=80></p>
  <p align="center"><img src="./Screenshots/21.png" width=600 height=150></p>
  
-Pour que les modifications prennent effet, nous devons redémarrer le service suivant: 
+* Pour que les modifications prennent effet, nous devons redémarrer le service suivant: 
    ```Shell
   sudo service krb5-admin-server restart
    ```
   <p align="center"><img src="./Screenshots/22.png" width=400 height=80></p>
 
 * Maintenant on va créer des principaux pour **la machine cliente** et **la machine apacheserver** 
-* Le principal pour le client :
-  <img src="./Screenshots/23.png" width=450 height=300>
-○	Le principal su server Apache:
-  <img src="./Screenshots/24.png" width=450 height=300>
 
-●	pour vérifier la nouvelles liste des principaux :
-  <img src="./Screenshots/25.png" width=450 height=300>
+<table align="center">
+  <tr>
+    <th>Le principal pour le client</th>
+  </tr>
+  <tr>
+    <td><img src="./Screenshots/23.png" width=500 height=100></td>
+  </tr>
+  <tr>
+    <th>Le principal su server Apache</th>
+  </tr>
+  <tr>
+    <td><img src="./Screenshots/24.png" width=500 height=80></td>
+  </tr>
+</table>
 
-●	Le serveur Apache : 
-○	on installe Apache2:
-   <img src="./Screenshots/26.png" width=450 height=300>
-    <img src="./Screenshots/27.png" width=450 height=300>
+* pour vérifier la nouvelles liste des principaux :
+  <p align="center"><img src="./Screenshots/25.png" width=300 height=200></p>
 
- 
+#### Le serveur Apache : 
+* on installe `apache2` :
+   ``` Shell
+  sudo apt update -y
+   ```
+   <p align="center"><img src="./Screenshots/26.png" width=400 height=50></p>
+   
+  ``` Shell
+  sudo apt install apache2 -y
+  ```
+    <p align="center"><img src="./Screenshots/27.png" width=400 height=50></p>
 
-●	pour vérifier que Apache2 est déjà démarré :
-  <img src="./Screenshots/28.png" width=450 height=300>
+* pour vérifier que Apache2 est déjà démarré :
 
-●	pour que notre serveur démarre automatiquement au démarrage de la machine , on doit exécuter la commande:
-  <img src="./Screenshots/29.png" width=450 height=300>
+  ``` Shell
+  sudo systemctl status apache2.service
+  ```
+  
+  <p align="center"><img src="./Screenshots/28.png" width=500 height=250></p>
 
-●	Après l’installation il est recommandé d’installer “curl”, si on veut pouvoir lancer les cnxs web depuis le navigateur:
-  <img src="./Screenshots/30.png" width=450 height=300>
+* pour que notre serveur démarre automatiquement au démarrage de la machine , on doit exécuter la commande:
 
-Les fichiers et dossiers nécessaires à la configuration des sites webs au travers des hôtes virtuels sont dans /etc/apache2. ceux nous intéressant sont:
-●	Le fichier apache2.conf:
-Contenant la configurations par defauts d'apache.
-●	Le dossier conf-available:
-Contenant les configurations disponibles dans apache.
-●	Le dossier conf-enabled:
-Contenant les configurations actives dans apache.
-●	Le dossier mods-available:
-Contenant les modules prient en charges par apache.
-●	Le dossier sites-available:
-Contenant les fichiers de configuration des sites web.
-●	NB:
-Apache lit les fichier de configuration pas ordre numérique de 000 à XXX.
- <img src="./Screenshots/31.png" width=450 height=300>
+  ``` Shell
+  sudo systemctl enable apache2
+  ```
+  
+  <p align="center"><img src="./Screenshots/29.png" width=600 height=100></p>
 
-●	Le dossier sites-enabled: (contenant les fichiers des sites actif sur le serveur)
- <img src="./Screenshots/32.png" width=450 height=300>
- <img src="./Screenshots/33.png" width=450 height=300>
+* Après l’installation il est recommandé d’installer `curl` , si on veut pouvoir lancer les cnxs web depuis le navigateur:
+  ``` Shell
+  sudo apt install curl
+  ```
+  <p align="center"><img src="./Screenshots/30.png" width=450 height=50></p>
+
+* Les fichiers et dossiers nécessaires à la configuration des sites webs au travers des hôtes virtuels sont dans `/etc/apache2` . ceux nous intéressant sont:
+
+ ``` Shell
+   .
+   │  ...
+   ├── etc
+   │   └── apache2
+   │       ├── apache2.conf    # fichier contenant la configurations par defauts d'apache
+   │       ├── conf-available  # dossier contenant les configurations disponibles dans apache
+   │       ├── conf-enabled    # dossier contenant les configurations actives dans apache
+   │       ├── mods-available  # dossier contenant les modules prient en charges par apache
+   │       └── sites-available # dossier contenant les fichiers de configuration des sites web
+   │  ...
+  
+  ```
+
+> NB:
+> * Apache lit les fichier de configuration pas ordre numérique de `000` à `XXX`.
+> <p align="center"><img src="./Screenshots/31.png" width=500 height=100></p>
+> * Le dossier `sites-enabled` : (contenant les fichiers des sites actif sur le serveur)
+> <p align="center"><img src="./Screenshots/32.png" width=500 height=300></p>
+> <p align="center"><img src="./Screenshots/33.png" width=500 height=80></p>
+
 ### ○	Configuration du serveur pour le site:
 Pour ce Projet nous avons décidé de changer la page html par défaut du serveur par un site web basic (sans Js ni Php).
 

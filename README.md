@@ -219,124 +219,198 @@ Les utilisateurs et les services d’un domaine sont définis comme des principa
 > NB:
 > * Apache lit les fichier de configuration pas ordre numérique de `000` à `XXX`.
 > <p align="center"><img src="./Screenshots/31.png" width=500 height=100></p>
-> * Le dossier `sites-enabled` : (contenant les fichiers des sites actif sur le serveur)
+> * Le dossier sites-enabled : (contenant les fichiers des sites actif sur le serveur)
 > <p align="center"><img src="./Screenshots/32.png" width=500 height=300></p>
 > <p align="center"><img src="./Screenshots/33.png" width=500 height=80></p>
 
-### ○	Configuration du serveur pour le site:
+### Configuration du serveur pour le site:
 Pour ce Projet nous avons décidé de changer la page html par défaut du serveur par un site web basic (sans Js ni Php).
 
-●	Nous allons créer un site sur notre serveur.Il sera stocké à l'emplacement suivant : /var/www/sitesec :
- <img src="./Screenshots/34.png" width=450 height=300>
-●	www-data étant l'utilisateur d'apache appartenant au groupe www-data, nous allons changer le propriétaire de notre dossier ainsi que son groupe. Et vérifier l'effectivité des changement grâce à ls:
- <img src="./Screenshots/35.png" width=450 height=300>
- <img src="./Screenshots/36.png" width=450 height=300>
+* Nous allons créer un site sur notre serveur.Il sera stocké à l'emplacement suivant : `/var/www/sitesec` :
+ <p align="center"><img src="./Screenshots/34.png" width=450 height=50></p>
  
+* `www-data` étant l'utilisateur d'apache appartenant au groupe `www-data` , nous allons changer le propriétaire de notre dossier ainsi que son groupe. Et vérifier l'effectivité des changement grâce à `ls` :
 
-●	créons le fichier de configuration de notre site:
- <img src="./Screenshots/37.png" width=450 height=300>
- <img src="./Screenshots/38.png" width=450 height=300>
+  ``` Shell
+  sudo chown -R www-data:www-data /var/www/sitesec
+  ```
+  
+ <p align="center"><img src="./Screenshots/35.png" width=450 height=80></p>
  
-●	Apache possède un outil de vérification des fichiers de configurations nommé configtest, qui effectue un test de ces fichiers (la syntaxe, indentation, etc ...). Il est accessible par la commande:
- <img src="./Screenshots/39.png" width=450 height=300>
-●	nous devons activer notre site web. En créant un lien symbolique sites-available vers sites-enabled grâce à la commande :
- <img src="./Screenshots/40.png" width=450 height=300>
+  ``` Shell
+  ls /var/www/sitesec -la
+  ```
+  
+ <p align="center"><img src="./Screenshots/36.png" width=450 height=200></p>
+ 
+* créons le fichier de configuration de notre site:
 
-●	Nous avons créé un fichier .htaccess pour la gérer la réécriture de notre url. afin que chaque fois que nous tapons www.sitesec.com l'url est reécrit en sitesec
- <img src="./Screenshots/41.png" width=450 height=300>
+``` Shell
+  ls /var/www/sitesec -la
+  ```
+  
+ <p align="center"><img src="./Screenshots/37.png" width=500 height=50></p>
+ <p align="center"><img src="./Screenshots/38.png" width=500 height=250></p>
+ 
+* Apache possède un outil de vérification des fichiers de configurations nommé `configtest` , qui effectue un test de ces fichiers (la syntaxe, indentation, etc ...). Il est accessible par la commande:
 
-●	Pour éviter les érreurs FORBIDEN à cause de l'absance du fichier ou plutôt de lien symbolique de rewrite dans mods-enabled, nous avons activer le module rewrite.
-  ○	Le fichier rewrite est absent du dossier mods-enabled :
- <img src="./Screenshots/42.png" width=450 height=300>
+``` Shell
+  /usr/sbin/apache2ctl configtest
+  ```
+  
+ <p align="center"><img src="./Screenshots/39.png" width=450 height=50></p>
+ 
+* nous devons activer notre site web. En créant un lien symbolique `sites-available` vers `sites-enabled` grâce à la commande :
 
-●	il fait bien parti des modules apache
- <img src="./Screenshots/43.png" width=450 height=300>
+``` Shell
+  sudo a2ensite 001-sitesec
+  ```
+ 
+ <p align="center"><img src="./Screenshots/40.png" width=450 height=150></p>
 
-●	Activons le module rewrite :
- <img src="./Screenshots/44.png" width=450 height=300>
+* Nous avons créé un fichier `.htaccess` pour la gérer la réécriture de notre url. afin que chaque fois que nous tapons `www.sitesec.com` l'url est reécrit en `sitesec`
+ <p align="center"><img src="./Screenshots/41.png" width=450 height=100></p>
 
-●	On va modifier le fichier de configuration de la page par défaut afin ls
+* Pour éviter les érreurs **FORBIDEN** à cause de l'absance du fichier ou plutôt de lien symbolique de rewrite dans `mods-enabled` , nous avons activer le module rewrite.
+* Le fichier rewrite est absent du dossier `mods-enabled` :
+ <p align="center"><img src="./Screenshots/42.png" width=500 height=50></p>
+
+* il fait bien parti des modules apache
+ <p align="center"><img src="./Screenshots/43.png" width=500 height=50></p>
+
+* Activons le module rewrite :
+<p align="center"><img src="./Screenshots/44.png" width=450 height=150></p>
+
+* On va modifier le fichier de configuration de la page par défaut afin ls
 qu’elle pointe vers notre site :
- <img src="./Screenshots/45.png" width=450 height=300>
+<p align="center"><img src="./Screenshots/45.png" width=450 height=300></p>
 
-●	Vérifions l'effectivité de notre config dans sites-enabled/:
- <img src="./Screenshots/46.png" width=450 height=300>
+* Vérifions l'effectivité de notre config dans `sites-enabled/` :
+<p align="center"><img src="./Screenshots/46.png" width=450 height=100></p>
 
-●	pour que nos modification soit prise en compte, nous devons redémarrer notre serveur:
- <img src="./Screenshots/47.png" width=450 height=300>
-### ●	Configuration des Packages nécessaires :
+* pour que nos modification soit prise en compte, nous devons redémarrer notre serveur:
+<p align="center"><img src="./Screenshots/47.png" width=450 height=30></p>
 
-●	Installation des Packages nécessaires:
-○	le package libapache2-mod-auth-kerb
- <img src="./Screenshots/48.png" width=450 height=300>
+### Configuration des Packages nécessaires :
 
-●	le package krb5-user
- <img src="./Screenshots/49.png" width=450 height=300>
+* Installation des Packages nécessaires:
+ ##### le package `libapache2-mod-auth-kerb`
+<p align="center"><img src="./Screenshots/48.png" width=450 height=150></p>
 
-●	on doit configurer le royaume :
-○	le royaume:
- <img src="./Screenshots/50.png" width=450 height=300>
-○	le serveur kerberos:
-  <img src="./Screenshots/51.png" width=450 height=300>
-○	le serveur administrateur du royaume:
-  <img src="./Screenshots/52.png" width=450 height=300>
+ ##### le package `krb5-user`
+<p align="center"><img src="./Screenshots/49.png" width=450 height=150></p>
 
-
-### ●	Préparation du fichier keytab :
-Nous devons extraire le principal du service de la base de données des principaux KDC dans un fichier keytab.
-●	Dans la machine KDC, on va générer le fichier keytab:
- <img src="./Screenshots/53.png" width=450 height=300>
-  <img src="./Screenshots/54.png" width=450 height=300>
+* on doit configurer le royaume :
+ * **le royaume** :
  
-●	Vérifions que notre keytab a été créer:
-  <img src="./Screenshots/55.png" width=450 height=300>
-●	Envoyez le fichier keytab de la machine KDC à la machine du serveur: ! Nous devons avoir openssh-server package installé sur le serveur: 
-  <img src="./Screenshots/56.png" width=450 height=300>
-●	Vérifiez que le principal du service a été extrait avec succès de la base de données KDC:
-○	Répertorier la liste de clés actuelle: ktutil: list
-○	Lire un keytab krb5 dans la liste de touches actuelle ktutil: read_kt /home/orphe/Bureau/krb5.keytab
-○	Répertorier à nouveau la liste de clés actuelle ktutil: list
-  <img src="./Screenshots/57.png" width=450 height=300>
-  <img src="./Screenshots/58.png" width=450 height=300>
-### ●	Configuration du site:
-○	Modifions légèrement la configuration de notre site dans le fichier 001-sitesec.conf, afin d'intégrer l'authentification kerberos. Ajouter ce qui suit dans <VirtualHost *:80> ...... </VirtualHost> .
-  <img src="./Screenshots/59.png" width=450 height=300>
+<p align="center"><img src="./Screenshots/50.png" width=450 height=150></p> <br/>
+
+ * **le serveur kerberos** :
+ 
+<p align="center"><img src="./Screenshots/51.png" width=450 height=150></p> <br/>
+
+ * **le serveur administrateur du royaume** :
+ 
+<p align="center"><img src="./Screenshots/52.png" width=450 height=150></p>
 
 
-●	LE Client
-Notre serveur est bien accessible depuis la machine cliente:
-  <img src="./Screenshots/60.png" width=450 height=300>
+### Préparation du fichier keytab :
+Nous devons extraire le principal du service de la base de données des principaux KDC dans un fichier `keytab` .
+* Dans la machine KDC, on va générer le fichier `keytab` :
+
+``` Shell
+  sudo kadmin.local
+  ```
+ 
+<p align="center"><img src="./Screenshots/53.png" width=450 height=100></p>
+``` Shell
+  ktadd HTTP/apacheserver.insat.tn@INSAT.TN
+  ```
+<p align="center"><img src="./Screenshots/54.png" width=450 height=200></p>
+ 
+* Vérifions que notre `keytab` a été créer:
+ 
+``` Shell
+  sudo klist -kt /etc/krb5.keytab
+  ```
+  
+ <p align="center"><img src="./Screenshots/55.png" width=450 height=200></p>
+ 
+* Envoyez le fichier `keytab` de la **machine KDC** à la **machine du serveur** : 
+> Nous devons avoir `openssh-server` package installé sur le serveur: 
+
+<p align="center"><img src="./Screenshots/56.png" width=500 height=200></p>
+
+* Vérifiez que le principal du service a été extrait avec succès de la base de données KDC:
+	* Répertorier la liste de clés actuelle: 
+	``` Shell
+	 ktutil: list
+	  ```
+	* Lire un keytab krb5 dans la liste de touches actuelle ktutil:
+	``` Shell
+	 ktutil: read_kt /home/orphe/Bureau/krb5.keytab
+	  ``` 
+	* Répertorier à nouveau la liste de clés actuelle 
+	``` Shell
+	 ktutil: list
+	  ```
+	<p align="center"><img src="./Screenshots/57.png" width=450 height=150></p>
+  	<p align="center"><img src="./Screenshots/58.png" width=450 height=300></p>
+	
+### 	Configuration du site:
+	* Modifions légèrement la configuration de notre site dans le fichier `001-sitesec.conf`, afin d'intégrer l'authentification kerberos. Ajouter ce qui suit dans 
+	
+	``` Shell
+	 <VirtualHost *:80> ...... </VirtualHost> 
+	  ``` 
+	
+  	<p align="center"><img src="./Screenshots/59.png" width=450 height=300></p>
+
+
+#### Le Client
+Notre serveur est bien accessible depuis **la machine cliente** :
+  <p align="center"><img src="./Screenshots/60.png" width=450 height=300></p>
+  
 ## Préparation de Kerberos
 
-●	on installe krb5-user:
-  <img src="./Screenshots/61.png" width=450 height=300>
-○	Le royaume:
-  <img src="./Screenshots/62.png" width=450 height=300>
- 
+* on installe `krb5-user` :
+  <p align="center"><img src="./Screenshots/61.png" width=400 height=100></p>
+	* **Le royaume** :
+  	<p align="center"><img src="./Screenshots/62.png" width=450 height=200></p>
 
-●	kerberos server:
-		   <img src="./Screenshots/63.png" width=450 height=300>
+	* **kerberos server** :
+	<p align="center"><img src="./Screenshots/63.png" width=450 height=200></p>
 
-●	serveur administrateur :
- 
-  <img src="./Screenshots/64.png" width=450 height=300>
+	* **serveur administrateur** :
+	<p align="center"><img src="./Screenshots/64.png" width=450 height=300></p>
 
 ## Authentification du client
-●	Dans la machine cliente, vérifiez les informations d’identification mises en cache:
-   <img src="./Screenshots/65.png" width=450 height=300>
+* Dans la machine cliente, vérifiez les informations d’identification mises en cache:
+	``` Shell
+	 klist
+	 ``` 
+ <p align="center"><img src="./Screenshots/65.png" width=300 height=80></p>
 
-●	Initialisez ensuite l’authentification de l’utilisateur:
- 		  <img src="./Screenshots/66.png" width=450 height=300>
+* Initialisez ensuite l’authentification de l’utilisateur:
+	``` Shell
+	 kinit user@INSAT.TN
+	 ``` 
+ <p align="center"><img src="./Screenshots/66.png" width=300 height=80></p>
 
-●	et vérifiez le ticket d’octroi de ticket (TGT):
-   <img src="./Screenshots/67.png" width=450 height=300>
+* et vérifiez le ticket d’octroi de ticket (TGT):
+ <p align="center"><img src="./Screenshots/67.png" width=450 height=200></p>
 
-Pour accéder au serveur après l'implémentation de Kerberos :
-●	Depuis Le Terminal:
-   <img src="./Screenshots/68.png" width=450 height=300>
+* Pour accéder au serveur après l'implémentation de Kerberos :
+	* Depuis Le Terminal:
+	
+	``` Shell
+	 curl --negotiate -u : apacheserver.insat.tn
+	``` 
+	  
+  <p align="center"><img src="./Screenshots/68.png" width=450 height=300></p>
 
-●	Depuis Le Serveur Web :
-   <img src="./Screenshots/69.png" width=450 height=300>
+	* Depuis Le Serveur Web :
+  <p align="center"><img src="./Screenshots/69.png" width=450 height=300></p>
 
-●	from another unauthorized user
-   <img src="./Screenshots/70.png" width=450 height=300>
+	* from another unauthorized user
+  <p align="center"><img src="./Screenshots/70.png" width=450 height=300></p>

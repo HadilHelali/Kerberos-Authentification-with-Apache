@@ -2,115 +2,152 @@
 
 ## What is Kerberos ?
 
-Kerberos is a computer network authentication protocol, which provides a secure Single Sign On (SSO) based on a trusted third-party mutual authentication service. It is secure because the user’s password is never transmitted over the wire. Kerberos uses Tickets which are negotiated with the server, with a limited time to live.
-In the case of HTTP, support for Kerberos is usually provided using the SPNEGO authentication mechanism (Simple and Protected GSS-API Negotiation). This is also known as ‘integrated authentication’ or ‘negotiate authentication’. Apache does not itself support SPNEGO, but support can be added by means of the mod_auth_kerb authentication module.
+* **Kerberos** is a computer network authentication protocol, which provides a secure Single Sign On (SSO) based on a trusted third-party mutual authentication service. It is secure because the user’s password is never transmitted over the wire. **Kerberos** uses Tickets which are negotiated with the server, with a limited time to live.
+* In the case of HTTP, support for Kerberos is usually provided using the **SPNEGO authentication mechanism** (Simple and Protected GSS-API Negotiation). This is also known as **‘integrated authentication’** or **‘negotiate authentication’**.
+* **Apache** does not itself support SPNEGO, but support can be added by means of the `mod_auth_kerb` authentication module.
 
 ## Hostname and IP Addresses
-in this manipulation we will use 3 kali machines : 
-●	KDC machine : 192.168.232.3
-●	Apache server machine : 192.168.232.6
-●	Client machine : 192.168.232.5
--> Virtual machines only have a NAT adapter by default but we will have to assign IP addresses to these machines, In order to do that we have to add a host-only adapter to each machine manually 
- <img src="./Screenshots/1.png" width=450 height=300>
+in this manipulation we will use 3 kali machines : <br/>
+* **KDC machine** : `192.168.232.3`
+* **Apache server machine** : `192.168.232.6`
+* **Client machine** : `192.168.232.5`
+> Virtual machines only have a **NAT adapter** by default but we will have to assign IP addresses to these machines, In order to do that we have to add a **host-only adapter** to each machine manually 
+ <p align="center"><img src="./Screenshots/1.png" width=450 height=250></p>
 
 ### Synchronisation des horloges
 Kerberos nécessite une synchronisation de horloges entre les 3 machines. Donc les horloges des 3 machines doivent être synchronisées.
 
 System clock synchronized était initialisée à false.  Pour l’activer : 
-  
- <img src="./Screenshots/2.png" width=450 height=300>
- <img src="./Screenshots/3.png" width=450 height=300>
-On aura alors dans les 3 machines : 
+  ```Shell
+  sudo apt install systemd-timesyncd
+   ```
+ <p align="center"><img src="./Screenshots/2.png" width=450 height=80></p>
  
-  <img src="./Screenshots/4.png" width=450 height=300>
-   <img src="./Screenshots/5.png" width=450 height=300>
-  <img src="./Screenshots/6.png" width=450 height=300>
+   ```Shell
+  sudo systemctl start systemd-timesyncd
+   ```
+   ```Shell
+  sudo systemctl set-nyp true
+   ```
+ <p align="center"><img src="./Screenshots/3.png" width=450 height=100></p>
+On aura alors dans les 3 machines : <br/>
+<table>
+  <tr>
+    <th>KDC</th>
+    <th>Client</th>
+    <th>Service</th>
+  </tr>
+  <tr>
+    <td><img src="./Screenshots/4.png" width=450 height=250></td>
+    <td><img src="./Screenshots/5.png" width=450 height=250></td>
+    <td><img src="./Screenshots/6.png" width=450 height=250></td>
+  </tr>
+</table>
 
-Définissons des noms d'hôtes pour chaque machine:
-
-●	Machine KDC :
- 
- <img src="./Screenshots/7.png" width=450 height=300>
-●	Machine Client :
-  <img src="./Screenshots/8.png" width=450 height=300>
-
-●	Machine Apache Server :
-  <img src="./Screenshots/9.png" width=450 height=300>
-
-NB: pour vérifier le nom d'hôte de chaque machine on utilise la commande : hostname  
-
-Ensuite on mappe chaque nom d'hôte avec son IP address sur chaque machine . On accède alors au fichier au fichier /etc/hosts et on ajoute ces lignes .
- 
- <img src="./Screenshots/10.png" width=450 height=300>
-  <img src="./Screenshots/11.png" width=450 height=300>
-
-Une fois la configuration terminée, nous pouvons vérifier si les 3 machines sont accessibles grâce à la commande ping:
-●	Machine KDC :
-  <img src="./Screenshots/12.png" width=450 height=300>
- 
+Définissons **des noms d'hôtes** pour chaque machine:<br/>
+<table>
+  <tr>
+    <th>Machine KDC</th>
+    <th>Machine Client</th>
+    <th>Machine Apache Server</th>
+  </tr>
+  <tr>
+    <td><img src="./Screenshots/7.png" width=450 height=100></td>
+    <td><img src="./Screenshots/8.png" width=450 height=100></td>
+    <td><img src="./Screenshots/9.png" width=450 height=100></td>
+  </tr>
+</table>
 
 
-●	Machine client : 
- 
- <img src="./Screenshots/13.png" width=450 height=300>
+> NB: pour vérifier le nom d'hôte de chaque machine on utilise la commande : `hostname`  
 
-●	Machine ApacheServer:
+Ensuite on mappe chaque nom d'hôte avec son **IP address** sur chaque machine . On accède alors au fichier au fichier `/etc/hosts` et on ajoute ces lignes. <br/>
+   ```Shell
+  sudo nano /etc/hosts
+   ```
+ <p align="center"><img src="./Screenshots/10.png" width=300 height=80 ></p>
+ <p align="center"><img src="./Screenshots/11.png" width=600 height=300></p>
 
-  <img src="./Screenshots/14.png" width=450 height=300>
-		
+Une fois la configuration terminée, nous pouvons vérifier si les 3 machines sont accessibles grâce à la commande `ping` :
+
+<table>
+  <tr>
+    <th>Machine KDC</th>
+    <th>Machine Client</th>
+    <th>Machine Apache Server</th>
+  </tr>
+  <tr>
+    <td><img src="./Screenshots/12.png" width=500 height=200></td>
+    <td><img src="./Screenshots/13.png" width=500 height=200></td>
+    <td><img src="./Screenshots/14.png" width=500 height=200></td>
+  </tr>
+</table>	
 
 ###	Configuration des machines:
-●	Centre de Distribution des Clés (KDC): dans la machine KDC
+#### Centre de Distribution des Clés (KDC): dans la machine KDC
+* on installe les packages à installer sur la machine KDC: <br/>
+   
+   ```Shell
+  sudo apt update
+   ```
+ <p align="center"><img src="./Screenshots/15.png" width=200 height=50></p>
 
-  ●	on installe les packages à installer sur la machine KDC:
-<img src="./Screenshots/15.png" width=450 height=300>
-<img src="./Screenshots/16.png" width=450 height=300>
+   ```Shell
+  sudo apt install krb5-kdc krb5-admin-server krb5-config
+   ```
+<p align="center"><img src="./Screenshots/16.png" width=450 height=50></p>
  
  
+Lors de l’installation , on doit configurer **Kerberos** comme suit 
 
-Lors de l’installation , on doit configurer Kerberos comme suit 
+* **Le realm** : `INSAT.TN` (doit être écrit tout en majuscules)
+* **Le serveur Kerberos** : `kdc.insat.tn`
+* **Le serveur administrateur du royaume** : `kdc.insat.tn`
 
-●	Le realm : ‘INSAT.TN’ (doit être écrit tout en majuscules)
-●	Le serveur Kerberos: ‘kdc.insat.tn’
-●	Le serveur administrateur du royaume : ‘kdc.insat.tn’
+> **Le realm de Kerberos** est un terme utilisé dans le système d'authentification Kerberos. Il s'agit d'une chaîne de caractères qui identifie un domaine administratif unique pour l'ensemble des serveurs et des clients qui utilisent Kerberos pour l'authentification et l'autorisation.
 
-	Le realm de Kerberos est un terme utilisé dans le système d'authentification Kerberos. Il s'agit d'une chaîne de caractères qui identifie un domaine administratif unique pour l'ensemble des serveurs et des clients qui utilisent Kerberos pour l'authentification et l'autorisation.
+* puis on exécute la commande : 
+   ```Shell
+  sudo kerb5_newrealm
+   ```
+<p align="center"><img src="./Screenshots/17.png" width=500 height=250></p>
 
-●	pui on exécute la commande : 
+Elle nous demande alors d’entrer le `KDC dataset master key`
 
+> NB : 
+> * La commande `sudo krb5_newrealm` est utilisée pour créer un nouveau royaume Kerberos sur un serveur. Cette commande est généralement utilisée par les administrateurs système qui mettent en place un nouvel environnement Kerberos.
+> * Lorsque vous exécutez la commande `sudo krb5_newrealm` , elle vous invite à entrer plusieurs options de configuration, telles que le nom de royaume, le nom du serveur d'administration Kerberos et le royaume Kerberos par défaut pour les clients qui ne font pas partie du nouveau royaume. Une fois que vous avez saisi toutes les informations requises, la commande crée un nouveau royaume Kerberos et initialise la base de données Kerberos.
 
-<img src="./Screenshots/17.png" width=450 height=300>
-
-
-
-
-
-
-
-
-
-
-elle nous demande alors d’entrer le ‘KDC dataset master key ‘
-
-NB:La commande sudo krb5_newrealm est utilisée pour créer un nouveau royaume Kerberos sur un serveur. Cette commande est généralement utilisée par les administrateurs système qui mettent en place un nouvel environnement Kerberos.
-Lorsque vous exécutez la commande sudo krb5_newrealm, elle vous invite à entrer plusieurs options de configuration, telles que le nom de royaume, le nom du serveur d'administration Kerberos et le royaume Kerberos par défaut pour les clients qui ne font pas partie du nouveau royaume. Une fois que vous avez saisi toutes les informations requises, la commande crée un nouveau royaume Kerberos et initialise la base de données Kerberos.
-●	création des utilisateurs:
+* **Création des utilisateurs :**
 Les utilisateurs et les services d’un domaine sont définis comme des principals dans Kerberos . Ils sont gérés par un utilisateur admin que nous devons créer manuellement : 
-	 <img src="./Screenshots/18.png" width=450 height=300>
-NB :kadmin.local est un utilitaire d'administration local pour Kerberos qui permet de gérer les principaux d'une base de données Kerberos à partir d'une ligne de commande.
+   ```Shell
+  sudo kadmin.local
+   ```
+	 <p align="center"><img src="./Screenshots/18.png" width=450 height=180></p>
+	 
+> NB : `kadmin.local` est un utilitaire d'administration local pour Kerberos qui permet de gérer les principaux d'une base de données Kerberos à partir d'une ligne de commande.
 
-●	pour vérifier la liste des principals:
- <img src="./Screenshots/19.png" width=450 height=300>
+* Pour vérifier la liste des principals:
+   ```Shell
+  list_principals
+   ```
+ <p align="center"><img src="./Screenshots/19.png" width=300 height=150></p>
 
-●	Ensuite, nous devons accorder tous les droits d’accès à la base de données Kerberos à admin principal root / admin en utilisant le fichier de configuration /etc/krb5kdc/kadm5.acl .
- <img src="./Screenshots/20.png" width=450 height=300>
-  <img src="./Screenshots/21.png" width=450 height=300>
+* Ensuite, nous devons accorder tous les droits d’accès à la base de données Kerberos à admin principal `root / admin` en utilisant le fichier de configuration `/etc/krb5kdc/kadm5.acl` .
+   ```Shell
+  sudo nano /etc/krb5kdc/kadm5.acl
+   ```
+<p align="center"><img src="./Screenshots/20.png" width=400 height=80></p>
+ <p align="center"><img src="./Screenshots/21.png" width=600 height=150></p>
  
 Pour que les modifications prennent effet, nous devons redémarrer le service suivant: 
-  <img src="./Screenshots/22.png" width=450 height=300>
+   ```Shell
+  sudo service krb5-admin-server restart
+   ```
+  <p align="center"><img src="./Screenshots/22.png" width=400 height=80></p>
 
-●	Maintenant on va créer des principaux pour la machine cliente et la machine apacheserver 
-○	Le principal pour le client :
+* Maintenant on va créer des principaux pour **la machine cliente** et **la machine apacheserver** 
+* Le principal pour le client :
   <img src="./Screenshots/23.png" width=450 height=300>
 ○	Le principal su server Apache:
   <img src="./Screenshots/24.png" width=450 height=300>

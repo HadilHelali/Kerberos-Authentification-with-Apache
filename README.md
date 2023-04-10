@@ -6,7 +6,9 @@
 * In the case of HTTP, support for Kerberos is usually provided using the **SPNEGO authentication mechanism** (Simple and Protected GSS-API Negotiation). This is also known as **‘integrated authentication’** or **‘negotiate authentication’**.
 * **Apache** does not itself support SPNEGO, but support can be added by means of the `mod_auth_kerb` authentication module.
 
-## Hostname and IP Addresses
+## Configurations
+
+### Hostname and IP Addresses
 in this manipulation we will use 3 kali machines : <br/>
 * **KDC machine** : `192.168.232.3`
 * **Apache server machine** : `192.168.232.6`

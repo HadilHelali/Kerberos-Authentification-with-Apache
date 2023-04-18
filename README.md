@@ -427,7 +427,7 @@ Notre serveur est bien accessible depuis **la machine cliente** :
   ## Demo Video
 [![Demo](./Thumbnail.png)](./demo.mp4)
 
-## Collaborators
-This project was done by :
+## Collaborateurs
+Ce projet a été rélisé par :
 | Raoua Trimech | Hadil Helali | 
 | --- | --- |
